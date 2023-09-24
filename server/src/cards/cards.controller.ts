@@ -1,6 +1,7 @@
-import { Body, Controller, Logger, Post } from '@nestjs/common'
+import { Body, Controller, Logger, Post, Patch } from '@nestjs/common'
 import { CardEntity } from '../entities/Card'
 import { CardsService } from './cards.service'
+import { MoveCardDto } from './move-card.dto';
 
 @Controller('cards')
 export class CardsController {
@@ -13,5 +14,12 @@ export class CardsController {
     this.logger.log('POST /cards')
 
     return this.cardsService.create(card)
+  }
+
+  @Patch('move')
+  moveCard(@Body() moveCardDto: MoveCardDto): Promise<any> {
+    // const { cardId, sourceSectionId, targetSectionId } = moveCardDto
+    this.logger.log('PATCH /cards/move');
+    return this.cardsService.moveCard(moveCardDto);
   }
 }

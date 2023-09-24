@@ -4,7 +4,7 @@ import axios from 'axios'
 
 import Section from './components/section'
 import { ISection } from './types/section'
-
+import { MoveCardDto } from './types/move-card-dto'
 import './App.css'
 
 export const BoardContainer = styled.div`
@@ -39,9 +39,9 @@ function App() {
       data: { ISectiond, title }
     }).then((response) => {
       let sectionsClone: ISection[] = [...sections]
-      for (let i = 0; i < sectionsClone.length; i++) {
+      for (let i = 1; i < sectionsClone.length; i++) {
         let section: ISection = sectionsClone[i]
-        if (section.id == ISectiond) {
+        if (section.id === ISectiond) {
           section.cards.push({
             id: response.data.id,
             title: response.data.title,
@@ -52,14 +52,36 @@ function App() {
       }
     })
   }
+  const sectionIds = sections.map((section) => section.id);
 
+  const moveCardToSection = async (dto: MoveCardDto) => {
+      await axios.patch('http://localhost:3001/cards/move', dto);
+
+    let updatedSections = [...sections];
+    const sourceSection = updatedSections.find(s => s.id === dto.sourceSectionId);
+    const targetSection = updatedSections.find(s => s.id === dto.targetSectionId);
+
+    if (sourceSection && targetSection) {
+      const cardToMove = sourceSection.cards.find(c => c.id === dto.cardId);
+      if (cardToMove) {
+        // Remove from source section
+        sourceSection.cards = sourceSection.cards.filter(c => c.id !== dto.cardId);
+        
+        // Add to target section
+        targetSection.cards.push(cardToMove);
+      }
+    }
+    
+    setSections(updatedSections);
+  };
   return (
     <BoardContainer>
       {sections.map((section: ISection) => {
-        return <Section section={section} onCardSubmit={onCardSubmit}></Section>
+        return <Section key={section.id} section={section} onCardSubmit={onCardSubmit} onCardMove={moveCardToSection} sectionIds={sectionIds}></Section>
       })}
     </BoardContainer>
   )
-}
+  }
+
 
 export default App

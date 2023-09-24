@@ -38,7 +38,7 @@ export const CardsContainer = styled.div`
   overflow-y: auto;
   align-self: center;
   max-height: 90vh;
-  margin-top: 10px;
+  margin: 5px 5px;
   flex-direction: column;
   justify-content: space-between;
 `
@@ -65,7 +65,7 @@ export const ListCardComponent = styled.div`
   box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
   cursor: pointer;
   display: block;
-  margin-bottom: 8px;
+  margin: 8px 8px;
   max-width: 300px;
   min-height: 20px;
   position: relative;
